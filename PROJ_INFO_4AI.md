@@ -1,6 +1,6 @@
-# remote-ops-server
+# terminal-mcp-server
 
-This file contains information about the remote-ops-server project.
+This file contains information about the terminal-mcp-server project.
 
 ## 功能
 

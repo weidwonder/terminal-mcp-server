@@ -1,6 +1,6 @@
-# Remote Ops Server
+# Terminal MCP Server
 
-Remote Ops Server 是一个基于 Model Context Protocol (MCP) 的服务器，用于在本地或远程主机上执行命令。它提供了一个简单而强大的接口，允许 AI 模型和其他应用程序执行系统命令，无论是在本地机器上还是通过 SSH 在远程主机上。
+Terminal MCP Server 是一个基于 Model Context Protocol (MCP) 的服务器，用于在本地或远程主机上执行命令。它提供了一个简单而强大的接口，允许 AI 模型和其他应用程序执行系统命令，无论是在本地机器上还是通过 SSH 在远程主机上。
 
 ## 功能特性
 
@@ -14,8 +14,8 @@ Remote Ops Server 是一个基于 Model Context Protocol (MCP) 的服务器，�
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/remote-ops-server.git
-cd remote-ops-server
+git clone https://github.com/yourusername/terminal-mcp-server.git
+cd terminal-mcp-server
 
 # 安装依赖
 npm install
@@ -74,7 +74,7 @@ npm run inspector
 
 ## execute_command 工具
 
-execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本地或远程主机上执行命令。
+execute_command 工具是 Terminal MCP Server 提供的核心功能，用于在本地或远程主机上执行命令。
 
 ### 参数
 
@@ -127,9 +127,9 @@ execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本
 ```json
 {
   "mcpServers": {
-    "remote-ops": {
+    "terminal-mcp": {
       "command": "node",
-      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "args": ["/path/to/terminal-mcp-server/build/index.js"],
       "env": {}
     }
   }
@@ -141,7 +141,7 @@ execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本
 ```json
 {
   "mcpServers": {
-    "remote-ops-sse": {
+    "terminal-mcp-sse": {
       "url": "http://localhost:8080/sse",
       "headers": {}
     }
@@ -161,9 +161,9 @@ execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本
 ```json
 {
   "mcpServers": {
-    "remote-ops": {
+    "terminal-mcp": {
       "command": "node",
-      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "args": ["/path/to/terminal-mcp-server/build/index.js"],
       "env": {}
     }
   }
@@ -175,7 +175,7 @@ execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本
 ```json
 {
   "mcpServers": {
-    "remote-ops-sse": {
+    "terminal-mcp-sse": {
       "url": "http://localhost:8080/sse",
       "headers": {}
     }
@@ -193,9 +193,9 @@ execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本
 ```json
 {
   "mcpServers": {
-    "remote-ops": {
+    "terminal-mcp": {
       "command": "node",
-      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "args": ["/path/to/terminal-mcp-server/build/index.js"],
       "env": {}
     }
   }
@@ -207,7 +207,7 @@ execute_command 工具是 Remote Ops Server 提供的核心功能，用于在本
 ```json
 {
   "mcpServers": {
-    "remote-ops-sse": {
+    "terminal-mcp-sse": {
       "url": "http://localhost:8080/sse",
       "headers": {}
     }

@@ -1,11 +1,11 @@
 {
-  "name": "remote-ops-server",
+  "name": "terminal-mcp-server",
   "version": "0.1.0",
   "description": "操作X主机",
   "private": true,
   "type": "module",
   "bin": {
-    "remote-ops-server": "./build/index.js"
+    "terminal-mcp-server": "./build/index.js"
   },
   "files": [
     "build"

@@ -1,8 +1,8 @@
-# Remote Ops Server
+# Terminal MCP Server
 
 *[中文文档](README_CN.md)*
 
-Remote Ops Server is a Model Context Protocol (MCP) server that allows executing commands on local or remote hosts. It provides a simple yet powerful interface for AI models and other applications to execute system commands, either on the local machine or on remote hosts via SSH.
+Terminal MCP Server is a Model Context Protocol (MCP) server that allows executing commands on local or remote hosts. It provides a simple yet powerful interface for AI models and other applications to execute system commands, either on the local machine or on remote hosts via SSH.
 
 ## Features
 
@@ -16,8 +16,8 @@ Remote Ops Server is a Model Context Protocol (MCP) server that allows executing
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/remote-ops-server.git
-cd remote-ops-server
+git clone https://github.com/yourusername/terminal-mcp-server.git
+cd terminal-mcp-server
 
 # Install dependencies
 npm install
@@ -76,7 +76,7 @@ npm run inspector
 
 ## The execute_command Tool
 
-The execute_command tool is the core functionality provided by Remote Ops Server, used to execute commands on local or remote hosts.
+The execute_command tool is the core functionality provided by Terminal MCP Server, used to execute commands on local or remote hosts.
 
 ### Parameters
 
@@ -129,9 +129,9 @@ The execute_command tool is the core functionality provided by Remote Ops Server
 ```json
 {
   "mcpServers": {
-    "remote-ops": {
+    "terminal-mcp": {
       "command": "node",
-      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "args": ["/path/to/terminal-mcp-server/build/index.js"],
       "env": {}
     }
   }
@@ -143,7 +143,7 @@ The execute_command tool is the core functionality provided by Remote Ops Server
 ```json
 {
   "mcpServers": {
-    "remote-ops-sse": {
+    "terminal-mcp-sse": {
       "url": "http://localhost:8080/sse",
       "headers": {}
     }
@@ -163,9 +163,9 @@ Replace `localhost:8080/sse` with your actual server address, port, and endpoint
 ```json
 {
   "mcpServers": {
-    "remote-ops": {
+    "terminal-mcp": {
       "command": "node",
-      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "args": ["/path/to/terminal-mcp-server/build/index.js"],
       "env": {}
     }
   }
@@ -177,7 +177,7 @@ Replace `localhost:8080/sse` with your actual server address, port, and endpoint
 ```json
 {
   "mcpServers": {
-    "remote-ops-sse": {
+    "terminal-mcp-sse": {
       "url": "http://localhost:8080/sse",
       "headers": {}
     }
@@ -195,9 +195,9 @@ Replace `localhost:8080/sse` with your actual server address, port, and endpoint
 ```json
 {
   "mcpServers": {
-    "remote-ops": {
+    "terminal-mcp": {
       "command": "node",
-      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "args": ["/path/to/terminal-mcp-server/build/index.js"],
       "env": {}
     }
   }
@@ -209,7 +209,7 @@ Replace `localhost:8080/sse` with your actual server address, port, and endpoint
 ```json
 {
   "mcpServers": {
-    "remote-ops-sse": {
+    "terminal-mcp-sse": {
       "url": "http://localhost:8080/sse",
       "headers": {}
     }
