@@ -1,4 +1,5 @@
 # Terminal MCP Server
+[![smithery badge](https://smithery.ai/badge/@weidwonder/terminal-mcp-server)](https://smithery.ai/server/@weidwonder/terminal-mcp-server)
 
 *[中文文档](README_CN.md)*
 
@@ -14,6 +15,15 @@ Terminal MCP Server is a Model Context Protocol (MCP) server that allows executi
 
 ## Installation
 
+### Installing via Smithery
+
+To install terminal-mcp-server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@weidwonder/terminal-mcp-server):
+
+```bash
+npx -y @smithery/cli install @weidwonder/terminal-mcp-server --client claude
+```
+
+### Manual Installation
 ```bash
 # Clone the repository
 git clone https://github.com/weidwonder/terminal-mcp-server.git
