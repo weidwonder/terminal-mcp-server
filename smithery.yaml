@@ -1,0 +1,33 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    properties:
+      sse:
+        type: boolean
+        default: false
+        description: If true, run the server in SSE mode instead of default stdio mode.
+      port:
+        type: number
+        default: 8080
+        description: Port to listen on when running in SSE mode.
+      endpoint:
+        type: string
+        default: /sse
+        description: Endpoint path for SSE connections.
+      host:
+        type: string
+        default: localhost
+        description: Host to bind to when running in SSE mode.
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => { const args = []; if(config.sse){ args.push('--sse'); if(config.port) { args.push('--port', config.port.toString()); } if(config.endpoint){ args.push('--endpoint', config.endpoint); } if(config.host){ args.push('--host', config.host); } } return { command: 'node', args: ['build/index.js', ...args] }; }
+  exampleConfig:
+    sse: true
+    port: 3000
+    endpoint: /mcp
+    host: 0.0.0.0
