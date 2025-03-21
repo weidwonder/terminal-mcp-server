@@ -31,30 +31,30 @@ function createServer() {
       tools: [
         {
           name: "execute_command",
-          description: "在远程主机或本地执行命令 (This tool is for remote hosts, not the current machine)",
+          description: "Execute commands on remote hosts or locally (This tool can be used for both remote hosts and the current machine)",
           inputSchema: {
             type: "object",
             properties: {
               host: {
                 type: "string",
-                description: "要连接的主机（可选，如果不提供则在本地执行命令）"
+                description: "Host to connect to (optional, if not provided the command will be executed locally)"
               },
               username: {
                 type: "string",
-                description: "SSH连接的用户名（当指定host时必填）"
+                description: "Username for SSH connection (required when host is specified)"
               },
               session: {
                 type: "string",
-                description: "会话名称，默认为 default。相同的session名称，在20分钟内是持久复用一个终端，这样在操作一些需要环境比如conda环境的时候，可以一直在环境中。",
+                description: "Session name, defaults to 'default'. The same session name will reuse the same terminal environment for 20 minutes, which is useful for operations requiring specific environments like conda.",
                 default: "default"
               },
               command: {
                 type: "string",
-                description: "要执行的命令。在运行命令前，最好先判断一下系统的类型，比如是mac还是linux等等。"
+                description: "Command to execute. Before running commands, it's best to determine the system type (Mac, Linux, etc.)"
               },
               env: {
                 type: "object",
-                description: "环境变量",
+                description: "Environment variables",
                 default: {}
               }
             },
@@ -103,7 +103,7 @@ function createServer() {
         if (error instanceof Error && error.message.includes('SSH')) {
           throw new McpError(
             ErrorCode.InternalError,
-            `SSH连接错误: ${error.message}。请确保已经设置了SSH免密登录。`
+            `SSH connection error: ${error.message}. Please ensure SSH key-based authentication is set up.`
           );
         }
         throw error;
