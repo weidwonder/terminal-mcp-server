@@ -8,6 +8,11 @@ This file contains information about the terminal-mcp-server project.
 
 ## 最新修改
 
+2025-03-21（下午2点）：
+
+* 更新了README.md和README_CN.md文件中的仓库克隆路径，从`yourusername`改为`weidwonder`
+* 删除了不再使用的`src/scripts/deploy.sh`脚本文件和`src/scripts`目录
+
 2025-03-21（下午）：
 
 * 修复了会话持久化功能的bug，确保在使用相同的session名称再次连接时，能够正确复用现有的终端，而不是创建新的连接或终端。

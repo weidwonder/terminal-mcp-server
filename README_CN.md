@@ -14,7 +14,7 @@ Terminal MCP Server 是一个基于 Model Context Protocol (MCP) 的服务器，
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/terminal-mcp-server.git
+git clone https://github.com/weidwonder/terminal-mcp-server.git
 cd terminal-mcp-server
 
 # 安装依赖

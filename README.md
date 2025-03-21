@@ -16,7 +16,7 @@ Terminal MCP Server is a Model Context Protocol (MCP) server that allows executi
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/terminal-mcp-server.git
+git clone https://github.com/weidwonder/terminal-mcp-server.git
 cd terminal-mcp-server
 
 # Install dependencies
