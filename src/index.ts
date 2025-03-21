@@ -10,6 +10,24 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { CommandExecutor } from "./executor.js";
 
+// 全局日志函数，确保所有日志都通过stderr输出
+export const log = {
+  debug: (message: string, ...args: any[]) => {
+    if (process.env.DEBUG === 'true') {
+      console.error(`[DEBUG] ${message}`, ...args);
+    }
+  },
+  info: (message: string, ...args: any[]) => {
+    console.error(`[INFO] ${message}`, ...args);
+  },
+  warn: (message: string, ...args: any[]) => {
+    console.error(`[WARN] ${message}`, ...args);
+  },
+  error: (message: string, ...args: any[]) => {
+    console.error(`[ERROR] ${message}`, ...args);
+  }
+};
+
 const commandExecutor = new CommandExecutor();
 
 // 创建服务器
@@ -126,22 +144,29 @@ async function main() {
   try {
     // 使用标准输入输出
     const server = createServer();
+    
+    // 设置MCP错误处理程序
+    server.onerror = (error) => {
+      log.error(`MCP Error: ${error.message}`);
+    };
+    
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("Remote Ops MCP server running on stdio");
+    log.info("Remote Ops MCP server running on stdio");
 
     // 处理进程退出
     process.on('SIGINT', async () => {
+      log.info("Shutting down server...");
       await commandExecutor.disconnect();
       process.exit(0);
     });
   } catch (error) {
-    console.error("Server error:", error);
+    log.error("Server error:", error);
     process.exit(1);
   }
 }
 
 main().catch((error) => {
-  console.error("Server error:", error);
+  log.error("Server error:", error);
   process.exit(1);
 });

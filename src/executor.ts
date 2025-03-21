@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { exec } from 'child_process';
+import { log } from './index.js';
 
 export class CommandExecutor {
   private sessions: Map<string, {
@@ -31,11 +32,11 @@ export class CommandExecutor {
     if (session?.connection && session?.client) {
       // 检查客户端是否仍然连接
       if (session.client.listenerCount('ready') > 0 || session.client.listenerCount('data') > 0) {
-        console.log(`Reusing existing session: ${sessionKey}`);
+        log.info(`Reusing existing session: ${sessionKey}`);
         return session.connection;
       }
       // 如果客户端已断开连接，清理旧会话
-      console.log(`Session ${sessionKey} disconnected, creating new session`);
+      log.info(`Session ${sessionKey} disconnected, creating new session`);
       this.sessions.delete(sessionKey);
     }
 
@@ -46,18 +47,18 @@ export class CommandExecutor {
       const connection = new Promise<void>((resolve, reject) => {
         client
           .on('ready', () => {
-            console.log(`Session ${sessionKey} connected`);
+            log.info(`Session ${sessionKey} connected`);
             this.resetTimeout(sessionKey);
             
             // 创建一个交互式shell
             client.shell((err, stream) => {
               if (err) {
-                console.error(`Failed to create interactive shell: ${err.message}`);
+                log.error(`Failed to create interactive shell: ${err.message}`);
                 reject(err);
                 return;
               }
               
-              console.log(`Creating interactive shell for session ${sessionKey}`);
+              log.info(`Creating interactive shell for session ${sessionKey}`);
               
               // 获取会话对象
               const sessionData = this.sessions.get(sessionKey);
@@ -72,7 +73,7 @@ export class CommandExecutor {
               
               // 处理shell关闭事件
               stream.on('close', () => {
-                console.log(`Interactive shell for session ${sessionKey} closed`);
+                log.info(`Interactive shell for session ${sessionKey} closed`);
                 const sessionData = this.sessions.get(sessionKey);
                 if (sessionData) {
                   sessionData.shellReady = false;
@@ -88,7 +89,7 @@ export class CommandExecutor {
             });
           })
           .on('error', (err) => {
-            console.error(`会话 ${sessionKey} 连接错误:`, err.message);
+            log.error(`会话 ${sessionKey} 连接错误:`, err.message);
             reject(err);
           })
           .connect({
@@ -99,7 +100,7 @@ export class CommandExecutor {
           });
       });
 
-      console.log(`Creating new session: ${sessionKey}`);
+      log.info(`Creating new session: ${sessionKey}`);
       this.sessions.set(sessionKey, {
         client,
         connection,
@@ -127,7 +128,7 @@ export class CommandExecutor {
     }
 
     session.timeout = setTimeout(async () => {
-      console.log(`Session ${sessionKey} timeout, disconnecting`);
+      log.info(`Session ${sessionKey} timeout, disconnecting`);
       await this.disconnectSession(sessionKey);
     }, this.sessionTimeout);
 
@@ -161,7 +162,7 @@ export class CommandExecutor {
       } else if (sessionData.client) {
         // 检查客户端是否仍然连接
         if (sessionData.client.listenerCount('ready') === 0 && sessionData.client.listenerCount('data') === 0) {
-          console.log(`Session ${sessionKey} disconnected, reconnecting`);
+          log.info(`Session ${sessionKey} disconnected, reconnecting`);
           needNewConnection = true;
         }
       } else {
@@ -170,11 +171,11 @@ export class CommandExecutor {
       
       // 如果需要新连接，则创建
       if (needNewConnection) {
-        console.log(`Creating new connection for command execution: ${sessionKey}`);
+        log.info(`Creating new connection for command execution: ${sessionKey}`);
         await this.connect(host, username, session);
         sessionData = this.sessions.get(sessionKey);
       } else {
-        console.log(`Reusing existing session for command execution: ${sessionKey}`);
+        log.info(`Reusing existing session for command execution: ${sessionKey}`);
       }
       
       if (!sessionData || !sessionData.client) {
@@ -185,7 +186,7 @@ export class CommandExecutor {
 
       // 检查是否有交互式shell可用
       if (sessionData.shellReady && sessionData.shell) {
-        console.log(`Executing command using interactive shell: ${command}`);
+        log.info(`Executing command using interactive shell: ${command}`);
         return new Promise((resolve, reject) => {
           let stdout = "";
           let stderr = "";
@@ -203,7 +204,7 @@ export class CommandExecutor {
           // 添加数据处理器
           const dataHandler = (data: Buffer) => {
             const str = data.toString();
-            console.log(`Shell数据: ${str}`);
+            log.debug(`Shell数据: ${str}`);
             
             if (str.includes(uniqueMarker)) {
               // 命令执行完成
@@ -265,7 +266,7 @@ export class CommandExecutor {
           }, 30000); // 30秒超时
         });
       } else {
-        console.log(`Executing command using exec: ${command}`);
+        log.info(`Executing command using exec: ${command}`);
         return new Promise((resolve, reject) => {
           // 构建环境变量设置命令
           const envSetup = Object.entries(env)
@@ -305,7 +306,7 @@ export class CommandExecutor {
     // 否则在本地执行命令
     else {
       // 在本地执行命令时，也使用会话机制来保持环境变量
-      console.log(`Executing command using local session: ${sessionKey}`);
+      log.info(`Executing command using local session: ${sessionKey}`);
       
       // 检查是否已有本地会话
       let sessionData = this.sessions.get(sessionKey);
@@ -321,10 +322,10 @@ export class CommandExecutor {
           env: { ...env } // 保存初始环境变量
         };
         this.sessions.set(sessionKey, sessionData);
-        console.log(`Creating new local session: ${sessionKey}`);
+        log.info(`Creating new local session: ${sessionKey}`);
         sessionEnv = env;
       } else {
-        console.log(`Reusing existing local session: ${sessionKey}`);
+        log.info(`Reusing existing local session: ${sessionKey}`);
         // 合并现有会话环境变量和新的环境变量
         if (!sessionData.env) {
           sessionData.env = {};
@@ -342,7 +343,7 @@ export class CommandExecutor {
         const envVars = { ...process.env, ...sessionEnv };
         
         // 执行命令
-        console.log(`Executing local command: ${command}`);
+        log.info(`Executing local command: ${command}`);
         exec(command, { env: envVars }, (error, stdout, stderr) => {
           if (error && error.code !== 0) {
             // 我们不直接拒绝，而是返回错误信息作为stderr
@@ -359,18 +360,18 @@ export class CommandExecutor {
     const session = this.sessions.get(sessionKey);
     if (session) {
       if (session.shell) {
-        console.log(`Closing interactive shell for session ${sessionKey}`);
+        log.info(`Closing interactive shell for session ${sessionKey}`);
         session.shell.end();
         session.shellReady = false;
       }
       if (session.client) {
-        console.log(`Disconnecting SSH connection for session ${sessionKey}`);
+        log.info(`Disconnecting SSH connection for session ${sessionKey}`);
         session.client.end();
       }
       if (session.timeout) {
         clearTimeout(session.timeout);
       }
-      console.log(`Disconnecting session: ${sessionKey}`);
+      log.info(`Disconnecting session: ${sessionKey}`);
       this.sessions.delete(sessionKey);
     }
   }
