@@ -96,43 +96,6 @@ export class SSHManager {
     });
   }
 
-  async getSystemInfo(host: string): Promise<{
-    cpuUsage: string;
-    memoryUsage: string;
-    diskUsage: string;
-  }> {
-    const commands = {
-      cpu: "top -bn1 | grep 'Cpu(s)' | awk '{print $2}'",
-      memory: "free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2}'",
-      disk: "df -h / | awk 'NR==2{print $5}'",
-    };
-
-    const [cpu, memory, disk] = await Promise.all([
-      this.executeCommand(host, commands.cpu),
-      this.executeCommand(host, commands.memory),
-      this.executeCommand(host, commands.disk),
-    ]);
-
-    return {
-      cpuUsage: cpu.stdout.trim(),
-      memoryUsage: memory.stdout.trim(),
-      diskUsage: disk.stdout.trim(),
-    };
-  }
-
-  async getProcessList(host: string): Promise<string> {
-    const { stdout } = await this.executeCommand(host, 'ps aux | head -n 20');
-    return stdout;
-  }
-
-  async killProcess(host: string, pid: number): Promise<string> {
-    const { stdout, stderr } = await this.executeCommand(host, `kill ${pid}`);
-    if (stderr) {
-      throw new Error(stderr);
-    }
-    return stdout || 'Process killed successfully';
-  }
-
   async disconnect(): Promise<void> {
     if (this.client) {
       this.client.end();

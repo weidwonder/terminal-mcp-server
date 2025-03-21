@@ -1,111 +1,251 @@
-# Remote Operations MCP Server
+# Remote Ops Server
 
-这是一个用于远程主机操作的MCP服务器,提供了执行命令、获取系统信息等功能。
+*[中文文档](README_CN.md)*
 
-## 功能特性
+Remote Ops Server is a Model Context Protocol (MCP) server that allows executing commands on local or remote hosts. It provides a simple yet powerful interface for AI models and other applications to execute system commands, either on the local machine or on remote hosts via SSH.
 
-1. 远程命令执行 (execute_command)
-2. 系统资源监控 (get_system_info)
-3. 进程管理 (list_processes, kill_process)
+## Features
 
-## 远程主机系统特性
+- **Local Command Execution**: Execute commands directly on the local machine
+- **Remote Command Execution**: Execute commands on remote hosts via SSH
+- **Session Persistence**: Support for persistent sessions that reuse the same terminal environment for a specified time (default 20 minutes)
+- **Environment Variables**: Set custom environment variables for commands
+- **Multiple Connection Methods**: Connect via stdio or SSE (Server-Sent Events)
 
-### Conda环境管理
+## Installation
 
-1. 环境位置
-   - Conda安装路径: `/home/weidwonder/softwares/minicoda3`
-   - 环境初始化脚本: `/home/weidwonder/softwares/minicoda3/etc/profile.d/conda.sh`
-
-2. 环境激活
-   - 需要先source初始化脚本: `source /home/weidwonder/softwares/minicoda3/etc/profile.d/conda.sh`
-   - 然后才能激活环境: `conda activate <env_name>`
-   - 在执行命令时需要组合这两个步骤:
-     ```bash
-     source /home/weidwonder/softwares/minicoda3/etc/profile.d/conda.sh && conda activate <env_name>
-     ```
-
-3. 常见问题
-   - conda命令未找到: 需要先source初始化脚本
-   - 环境激活失败: 检查环境名称是否正确
-   - 长时间运行的命令: 建议使用nohup在后台运行
-
-### 项目部署
-
-1. 项目路径
-   - 主要项目目录: `/home/weidwonder/projects/taging_album/`
-   - 确保在执行命令时使用正确的项目路径
-
-2. 文件权限
-   - 使用SSH密钥认证
-   - 密钥位置: `~/.ssh/id_rsa`
-   - 确保对项目目录有正确的读写权限
-
-3. 系统资源
-   - 可以使用get_system_info工具监控资源使用情况
-   - CPU使用率、内存使用率和磁盘使用率的实时监控
-
-### 执行命令注意事项
-
-1. 命令超时
-   - 默认超时时间为60秒
-   - 长时间运行的命令建议使用nohup
-   - 使用nohup时记得重定向输出:
-     ```bash
-     nohup command > output.log 2>&1 &
-     ```
-
-2. 环境变量
-   - 每个命令都在新的会话中执行
-   - 需要显式设置所需的环境变量
-   - 多个命令使用 && 连接可以保持环境变量
-
-3. 错误处理
-   - 命令执行失败会返回stderr信息
-   - 可以通过检查stderr判断命令是否成功
-   - 建议在执行关键命令前后进行验证
-
-## 使用示例
-
-1. 激活Conda环境并执行Python脚本
 ```bash
-source /home/weidwonder/softwares/minicoda3/etc/profile.d/conda.sh && conda activate ero_alb && python script.py
+# Clone the repository
+git clone https://github.com/yourusername/remote-ops-server.git
+cd remote-ops-server
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
 ```
 
-2. 后台运行长时间任务
+## Usage
+
+### Starting the Server
+
 ```bash
-nohup python long_running_script.py > output.log 2>&1 &
+# Start the server using stdio (default mode)
+npm start
+
+# Or run the built file directly
+node build/index.js
 ```
 
-3. 获取系统信息
-```typescript
-const result = await use_mcp_tool("remote-ops", "get_system_info", {});
+### Starting the Server in SSE Mode
+
+The SSE (Server-Sent Events) mode allows you to connect to the server remotely via HTTP.
+
+```bash
+# Start the server in SSE mode
+npm run start:sse
+
+# Or run the built file directly with SSE flag
+node build/index.js --sse
 ```
 
-4. 执行远程命令
-```typescript
-const result = await use_mcp_tool("remote-ops", "execute_command", {
-  command: "your_command_here"
-});
+You can customize the SSE server with the following command-line options:
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--port` or `-p` | The port to listen on | 8080 |
+| `--endpoint` or `-e` | The endpoint path | /sse |
+| `--host` or `-h` | The host to bind to | localhost |
+
+Example with custom options:
+
+```bash
+# Start SSE server on port 3000, endpoint /mcp, and bind to all interfaces
+node build/index.js --sse --port 3000 --endpoint /mcp --host 0.0.0.0
 ```
 
-## 最佳实践
+This will start the server and listen for SSE connections at `http://0.0.0.0:3000/mcp`.
 
-1. 命令执行
-   - 总是使用完整路径
-   - 组合多个命令时使用 && 连接
-   - 对于长时间运行的命令使用nohup
+### Testing with MCP Inspector
 
-2. 环境管理
-   - 在每次会话开始时初始化conda
-   - 使用正确的环境名称
-   - 验证环境激活是否成功
+```bash
+# Start the MCP Inspector tool
+npm run inspector
+```
 
-3. 错误处理
-   - 检查命令的stderr输出
-   - 为长时间运行的命令添加日志
-   - 使用适当的超时设置
+## The execute_command Tool
 
-4. 资源监控
-   - 定期检查系统资源使用情况
-   - 注意磁盘空间使用
-   - 监控关键进程的状态
+The execute_command tool is the core functionality provided by Remote Ops Server, used to execute commands on local or remote hosts.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| command | string | Yes | The command to execute |
+| host | string | No | The remote host to connect to. If not provided, the command will be executed locally |
+| username | string | Required when host is specified | The username for SSH connection |
+| session | string | No | Session name, defaults to "default". The same session name will reuse the same terminal environment for 20 minutes |
+| env | object | No | Environment variables, defaults to an empty object |
+
+### Examples
+
+#### Executing a Command Locally
+
+```json
+{
+  "command": "ls -la",
+  "session": "my-local-session",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
+```
+
+#### Executing a Command on a Remote Host
+
+```json
+{
+  "host": "example.com",
+  "username": "user",
+  "command": "ls -la",
+  "session": "my-remote-session",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
+```
+
+## Configuring with AI Assistants
+
+### Configuring with Roo Code
+
+1. Open VSCode and install the Roo Code extension
+2. Open the Roo Code settings file: `~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json`
+3. Add the following configuration:
+
+#### For stdio mode (local connection)
+
+```json
+{
+  "mcpServers": {
+    "remote-ops": {
+      "command": "node",
+      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "env": {}
+    }
+  }
+}
+```
+
+#### For SSE mode (remote connection)
+
+```json
+{
+  "mcpServers": {
+    "remote-ops-sse": {
+      "url": "http://localhost:8080/sse",
+      "headers": {}
+    }
+  }
+}
+```
+
+Replace `localhost:8080/sse` with your actual server address, port, and endpoint if you've customized them.
+
+### Configuring with Cline
+
+1. Open the Cline settings file: `~/.cline/config.json`
+2. Add the following configuration:
+
+#### For stdio mode (local connection)
+
+```json
+{
+  "mcpServers": {
+    "remote-ops": {
+      "command": "node",
+      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "env": {}
+    }
+  }
+}
+```
+
+#### For SSE mode (remote connection)
+
+```json
+{
+  "mcpServers": {
+    "remote-ops-sse": {
+      "url": "http://localhost:8080/sse",
+      "headers": {}
+    }
+  }
+}
+```
+
+### Configuring with Claude Desktop
+
+1. Open the Claude Desktop settings file: `~/Library/Application Support/Claude/claude_desktop_config.json`
+2. Add the following configuration:
+
+#### For stdio mode (local connection)
+
+```json
+{
+  "mcpServers": {
+    "remote-ops": {
+      "command": "node",
+      "args": ["/path/to/remote-ops-server/build/index.js"],
+      "env": {}
+    }
+  }
+}
+```
+
+#### For SSE mode (remote connection)
+
+```json
+{
+  "mcpServers": {
+    "remote-ops-sse": {
+      "url": "http://localhost:8080/sse",
+      "headers": {}
+    }
+  }
+}
+```
+
+## Best Practices
+
+### Command Execution
+
+- Before running commands, it's best to determine the system type (Mac, Linux, etc.)
+- Use full paths to avoid path-related issues
+- For command sequences that need to maintain environment, use `&&` to connect multiple commands
+- For long-running commands, consider using `nohup` or `screen`/`tmux`
+
+### SSH Connection
+
+- Ensure SSH key-based authentication is set up
+- If connection fails, check if the key file exists (default path: `~/.ssh/id_rsa`)
+- Make sure the SSH service is running on the remote host
+
+### Session Management
+
+- Use the session parameter to maintain environment between related commands
+- For operations requiring specific environments, use the same session name
+- Note that sessions will automatically close after 20 minutes of inactivity
+
+### Error Handling
+
+- Command execution results include both stdout and stderr
+- Check stderr to determine if the command executed successfully
+- For complex operations, add verification steps to ensure success
+
+## Important Notes
+
+- For remote command execution, SSH key-based authentication must be set up in advance
+- For local command execution, commands will run in the context of the user who started the server
+- Session timeout is 20 minutes, after which the connection will be automatically closed
