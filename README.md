@@ -1,6 +1,10 @@
 # Terminal MCP Server
 [![smithery badge](https://smithery.ai/badge/@weidwonder/terminal-mcp-server)](https://smithery.ai/server/@weidwonder/terminal-mcp-server)
 
+<a href="https://glama.ai/mcp/servers/@weidwonder/terminal-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@weidwonder/terminal-mcp-server/badge" alt="Terminal Server MCP server" />
+</a>
+
 *[中文文档](README_CN.md)*
 
 Terminal MCP Server is a Model Context Protocol (MCP) server that allows executing commands on local or remote hosts. It provides a simple yet powerful interface for AI models and other applications to execute system commands, either on the local machine or on remote hosts via SSH.
