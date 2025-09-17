@@ -2,7 +2,7 @@
 [![smithery badge](https://smithery.ai/badge/@weidwonder/terminal-mcp-server)](https://smithery.ai/server/@weidwonder/terminal-mcp-server)
 
 ## Notice 注意事项
-Current Project not in maintance anymore. I recommend you guys to use more advanced command tool —— [Desktop Commander](https://desktopcommander.app/)
+Current Project not in maintance anymore. I recommend you guys to use more advanced command tool —— [Desktop Commander](https://desktopcommander.app/)  
 当前项目已经不在维护。我建议大家用更先进的终端MCP工具 [Desktop Commander](https://desktopcommander.app/)
 
 
